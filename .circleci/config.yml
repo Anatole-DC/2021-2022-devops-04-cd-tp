@@ -48,8 +48,13 @@ jobs:
       - attach_workspace:
           at: /tmp
       - run:
+          name: Install netlify
+          command: |
+            npm install netlify-cli -g
+            npm install netlify-cli --save-dev
+      - run:
           name: Deploy app
-          command: echo todo && false
+          command: netlify deploy --auth $NETLIFY_AUTH_TOKEN
   back-test-unit:
     <<: *shared-config
     steps:
@@ -92,13 +97,13 @@ jobs:
             echo true
       - deploy:
           name: Publish application to docker hub
-          command: |
-            docker login -e $PROD_EMAIL -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
-            docker tag app $DOCKERHUB_USERNAME/my-awesome-ci-expr:$CIRCLE_BUILD_NUM
-            docker tag app $DOCKERHUB_USERNAME/my-awesome-ci-expr:latest
-            docker push $DOCKERHUB_USERNAME/my-awesome-ci-expr:$CIRCLE_BUILD_NUM
-            docker push $DOCKERHUB_USERNAME/my-awesome-ci-expr:latest
-            echo true
+          command: # |
+          #   docker login -e $PROD_EMAIL -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+          #   docker tag app $DOCKERHUB_USERNAME/my-awesome-ci-expr:$CIRCLE_BUILD_NUM
+          #   docker tag app $DOCKERHUB_USERNAME/my-awesome-ci-expr:latest
+          #   docker push $DOCKERHUB_USERNAME/my-awesome-ci-expr:$CIRCLE_BUILD_NUM
+          #   docker push $DOCKERHUB_USERNAME/my-awesome-ci-expr:latest
+          #   echo true
 
   back-deploy-heroku:
     docker:
