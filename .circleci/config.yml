@@ -103,7 +103,7 @@ jobs:
           #   docker tag app $DOCKERHUB_USERNAME/my-awesome-ci-expr:latest
           #   docker push $DOCKERHUB_USERNAME/my-awesome-ci-expr:$CIRCLE_BUILD_NUM
           #   docker push $DOCKERHUB_USERNAME/my-awesome-ci-expr:latest
-          #   echo true
+            echo true
 
   back-deploy-heroku:
     docker:
