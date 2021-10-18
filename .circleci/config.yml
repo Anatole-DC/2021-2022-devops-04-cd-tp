@@ -50,8 +50,7 @@ jobs:
       - run:
           name: Install netlify
           command: |
-            npm install netlify-cli -g
-            npm install netlify-cli --save-dev
+            yarn add -D netlify-cli
       - run:
           name: Deploy app
           command: netlify deploy --auth $NETLIFY_AUTH_TOKEN
