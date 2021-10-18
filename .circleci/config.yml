@@ -88,16 +88,16 @@ jobs:
       - run:
           name: Build application Docker image
           command: |
-            # docker build --cache-from=app -t app .
+            docker build --cache-from=app -t app .
             echo true
       - deploy:
           name: Publish application to docker hub
           command: |
-            # docker login -e $DOCKER_HUB_EMAIL -u $DOCKER_HUB_USER_ID -p $DOCKER_HUB_PWD
-            # docker tag app $DOCKER_HUB_USER_ID/my-awesome-ci-expr:$CIRCLE_BUILD_NUM
-            # docker tag app $DOCKER_HUB_USER_ID/my-awesome-ci-expr:latest
-            # docker push $DOCKER_HUB_USER_ID/my-awesome-ci-expr:$CIRCLE_BUILD_NUM
-            # docker push $DOCKER_HUB_USER_ID/my-awesome-ci-expr:latest
+            docker login -e $PROD_EMAIL -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+            docker tag app $DOCKERHUB_USERNAME/my-awesome-ci-expr:$CIRCLE_BUILD_NUM
+            docker tag app $DOCKERHUB_USERNAME/my-awesome-ci-expr:latest
+            docker push $DOCKERHUB_USERNAME/my-awesome-ci-expr:$CIRCLE_BUILD_NUM
+            docker push $DOCKERHUB_USERNAME/my-awesome-ci-expr:latest
             echo true
 
   back-deploy-heroku:
@@ -107,10 +107,15 @@ jobs:
       - checkout
       - run:
           name: Heroku Deploy
-          command: echo todo && false
+          command: git push heroku main
       - run:
           name: Smoke Test
-          command: echo todo && false
+          command: |
+            HTTPCODE=`curl -s -o /dev/null -w "%{http_code}" https://$HEROKU_APP_NAME.herokuapp.com/`
+            if [ "$HTTPCODE" -ne 200 ];then
+                echo "heroku app not responding, failing deploy"
+                exit 1
+            fi
 
 workflows:
   version: 2
@@ -120,9 +125,9 @@ workflows:
       - back-test-unit:
           requires:
             - build
-      - back-test-e2e:
-          requires:
-            - build
+      # - back-test-e2e:
+          # requires:
+            # - build
       - lint:
           requires:
             - build
@@ -130,7 +135,7 @@ workflows:
           requires:
             - build
             - lint
-            - back-test-e2e
+            # - back-test-e2e
             - back-test-unit
           filters:
             branches:
@@ -139,7 +144,7 @@ workflows:
           requires:
             - build
             - lint
-            - back-test-e2e
+            # - back-test-e2e
             - back-test-unit
           filters:
             branches:
@@ -148,7 +153,7 @@ workflows:
           requires:
             - build
             - lint
-            - back-test-e2e
+            # - back-test-e2e
             - back-test-unit
           filters:
             branches:
