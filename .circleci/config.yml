@@ -53,7 +53,7 @@ jobs:
             yarn add -D netlify-cli
       - run:
           name: Deploy app
-          command: yarn netlify deploy --auth $NETLIFY_AUTH_TOKEN
+          command: yarn netlify deploy --sites $NETLIFY_AUTH_TOKEN
   back-test-unit:
     <<: *shared-config
     steps:
