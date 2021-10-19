@@ -8,20 +8,20 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - dependencies-{{ checksum "package.json" }}-v1
+            - dependencies-{{ checksum "package.json" }}-v2
             # fallback to using the latest cache if no exact match is found
             - dependencies-
       - run: yarn install
       - save_cache:
           paths:
             - node_modules
-          key: dependencies-{{ checksum "package.json" }}-v1
+          key: dependencies-{{ checksum "package.json" }}-v2
   lint:
     <<: *shared-config
     steps:
       - checkout
       - restore_cache:
-          key: dependencies-{{ checksum "package.json" }}-v1
+          key: dependencies-{{ checksum "package.json" }}-v2
       - run: yarn lint
       - run: yarn format:check
   server-doc-build:
@@ -29,7 +29,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependencies-{{ checksum "package.json" }}-v1
+          key: dependencies-{{ checksum "package.json" }}-v2
       - run: yarn doc:build
       - run:
           name: Copy deployment artifacts to workspace
@@ -59,7 +59,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependencies-{{ checksum "package.json" }}-v1
+          key: dependencies-{{ checksum "package.json" }}-v2
       - run:
           command: yarn test
           environment:
@@ -76,7 +76,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependencies-{{ checksum "package.json" }}-v1
+          key: dependencies-{{ checksum "package.json" }}-v2
       - run:
           command: yarn test:e2e
           environment:
